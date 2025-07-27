@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo-App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <!-- Optional: Add custom styles -->
+    <style>
+        .completed-task {
+            text-decoration: line-through;
+            color: #6c757d; /* Bootstrap's secondary text color */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <h1 class="text-center mb-4">Todo App</h1>
+
+            <!-- Form to add a new task -->
+            <form action="/" method="post" class="mb-4">
+                <div class="input-group">
+                    <!-- FIX: Corrected class from "form-contro" to "form-control" -->
+                    <input class="form-control" type="text" name="title" placeholder="Add a new task..." required>
+                    <button class="btn btn-primary" type="submit">Add Task</button>
+                </div>
+            </form>
+
+            <!-- Task List -->
+            <ul class="list-group">
+                <!-- Loop through each task -->
+                <li th:each="task : ${tasks}"
+                    class="list-group-item d-flex justify-content-between align-items-center"
+                    th:classappend="${task.completed} ? 'list-group-item-light' : ''">
+
+                    <!-- Task Title with conditional styling for completed tasks -->
+                    <span th:text="${task.title}"
+                          th:classappend="${task.completed} ? 'completed-task' : ''">
+                        Task Title
+                    </span>
+
+                    <!-- Action Buttons -->
+                    <div>
+                        <!-- Toggle Button -->
+                        <a th:href="@{'/' + ${task.id} + '/toggle'}"
+                           class="btn btn-sm"
+                           th:classappend="${task.completed} ? 'btn-secondary' : 'btn-success'">
+                            <span th:text="${task.completed} ? 'Undo' : 'Done'"></span>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <a th:href="@{'/' + ${task.id} + '/delete'}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
