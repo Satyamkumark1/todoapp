@@ -1,172 +1,89 @@
-# Todo Application
+# Todo App
 
-A simple and efficient Todo application built with Spring Boot, featuring a clean web interface for managing tasks.
+A comprehensive Spring Boot application for managing tasks with advanced features.
 
-## 🚀 Features
+## Features
 
-- **Create Tasks**: Add new tasks with titles
-- **View Tasks**: Display all tasks in a clean list format
-- **Toggle Completion**: Mark tasks as complete or incomplete
-- **Delete Tasks**: Remove tasks from the list
-- **Persistent Storage**: Tasks are stored in MySQL database
-- **Responsive UI**: Clean and intuitive web interface using Thymeleaf
+### Core Task Management
+- ✅ **Create Tasks** - Add new tasks with title, description, category, and priority
+- ✅ **Edit Tasks** - Modify existing task details including title, description, category, and priority
+- ✅ **Delete Tasks** - Remove tasks from the system
+- ✅ **Toggle Completion** - Mark tasks as completed or pending
+- ✅ **Task Descriptions** - Add detailed descriptions to tasks
+- ✅ **Task Categories** - Organize tasks by categories (Work, Personal, Shopping, Health, Education, Other)
+- ✅ **Task Priority Levels** - Set priority levels (High, Medium, Low) with visual indicators
+- ✅ **Task Search & Filtering** - Search tasks by title and filter by status, category, and priority
 
-## 🛠️ Technology Stack
+### User Interface
+- Modern, responsive Bootstrap-based UI
+- Visual priority indicators with color-coded borders
+- Category and priority badges
+- Search and filter interface
+- Confirmation dialogs for destructive actions
+- Empty state handling
+- Task creation timestamps
 
-- **Backend**: Spring Boot 3.5.4
+## Technology Stack
+
+- **Backend**: Spring Boot 3.x, Spring Data JPA, Spring MVC
 - **Database**: MySQL
-- **ORM**: Spring Data JPA with Hibernate
-- **Template Engine**: Thymeleaf
+- **Frontend**: Thymeleaf, Bootstrap 5, Bootstrap Icons
 - **Build Tool**: Maven
-- **Java Version**: 17
-- **Additional**: Lombok for reducing boilerplate code
 
-## 📋 Prerequisites
+## Getting Started
 
-Before running this application, make sure you have the following installed:
+### Prerequisites
+- Java 17 or higher
+- MySQL 8.0 or higher
+- Maven 3.6 or higher
 
-- **Java 17** or higher
-- **Maven** 3.6+ 
-- **MySQL** 8.0+ server
-- **Git** (for cloning the repository)
+### Database Setup
+1. Create a MySQL database named `todo-app`
+2. Update database credentials in `src/main/resources/application.properties`
 
-## 🗄️ Database Setup
+### Running the Application
+1. Clone the repository
+2. Navigate to the project directory
+3. Run: `./mvnw spring-boot:run`
+4. Access the application at: `http://localhost:8080`
 
-1. **Install MySQL** if you haven't already
-2. **Create a database**:
-   ```sql
-   CREATE DATABASE todo-app;
-   ```
-3. **Update database credentials** in `src/main/resources/application.properties`:
-   ```properties
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
-   ```
+## API Endpoints
 
-## 🚀 Getting Started
+- `GET /` - Display all tasks
+- `POST /` - Create a new task
+- `GET /{id}/edit` - Show edit form for a task
+- `POST /{id}/edit` - Update an existing task
+- `GET /{id}/delete` - Delete a task
+- `GET /{id}/toggle` - Toggle task completion status
+- `GET /search` - Search and filter tasks
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd todoapp
-```
+## Task Model
 
-### 2. Configure Database
-Edit `src/main/resources/application.properties` and update the database credentials:
-```properties
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
+Each task contains:
+- **ID**: Unique identifier
+- **Title**: Task title (required)
+- **Description**: Detailed task description (optional)
+- **Category**: Task category (Work, Personal, Shopping, Health, Education, Other)
+- **Priority**: Priority level (High, Medium, Low)
+- **Completed**: Completion status (boolean)
+- **Created At**: Timestamp of task creation
 
-### 3. Build the Application
-```bash
-./mvnw clean install
-```
+## Search and Filter Options
 
-### 4. Run the Application
-```bash
-./mvnw spring-boot:run
-```
+- **Search by Title**: Case-insensitive search in task titles
+- **Filter by Status**: All, Pending, or Completed tasks
+- **Filter by Category**: Filter by specific task categories
+- **Filter by Priority**: Filter by priority levels
+- **Combined Filters**: Use multiple filters simultaneously
 
-Alternatively, you can run the JAR file:
-```bash
-java -jar target/todoapp-0.0.1-SNAPSHOT.jar
-```
+## Future Enhancements
 
-### 5. Access the Application
-Open your web browser and navigate to:
-```
-http://localhost:8080
-```
-
-## 📁 Project Structure
-
-```
-todoapp/
-├── src/
-│   ├── main/
-│   │   ├── java/com/app/todoapp/
-│   │   │   ├── controller/
-│   │   │   │   └── TaskController.java      # REST endpoints
-│   │   │   ├── models/
-│   │   │   │   └── Task.java               # Entity model
-│   │   │   ├── repositery/
-│   │   │   │   └── TaskRepo.java           # Data access layer
-│   │   │   ├── services/
-│   │   │   │   └── TaskService.java        # Business logic
-│   │   │   └── TodoappApplication.java     # Main application class
-│   │   └── resources/
-│   │       ├── application.properties      # Configuration
-│   │       ├── static/                     # Static resources
-│   │       └── templates/
-│   │           └── tasks.html              # Thymeleaf template
-│   └── test/                               # Test files
-├── pom.xml                                 # Maven configuration
-└── README.md                               # This file
-```
-
-## 🔧 Configuration
-
-The application uses the following key configurations:
-
-- **Database**: MySQL with JPA/Hibernate
-- **Server Port**: 8080 (default)
-- **Database Schema**: Auto-generated using `hibernate.ddl-auto=update`
-- **Template Engine**: Thymeleaf for server-side rendering
-
-## 📖 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Display all tasks |
-| POST | `/` | Create a new task |
-| GET | `/{id}/toggle` | Toggle task completion status |
-| GET | `/{id}/delete` | Delete a task |
-
-## 🧪 Testing
-
-Run the test suite:
-```bash
-./mvnw test
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Error**:
-   - Ensure MySQL is running
-   - Verify database credentials in `application.properties`
-   - Check if the database `todo-app` exists
-
-2. **Port Already in Use**:
-   - Change the server port in `application.properties`:
-     ```properties
-     server.port=8081
-     ```
-
-3. **Build Errors**:
-   - Ensure Java 17+ is installed
-   - Run `./mvnw clean install` to rebuild
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👨‍💻 Author
-
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
-
-## 🙏 Acknowledgments
-
-- Spring Boot team for the excellent framework
-- MySQL team for the database
-- Thymeleaf team for the template engine 
+Potential features for future development:
+- User authentication and authorization
+- Due dates and reminders
+- Task sharing and collaboration
+- File attachments
+- Task templates
+- Advanced analytics and reporting
+- Mobile app support
+- API for external integrations 

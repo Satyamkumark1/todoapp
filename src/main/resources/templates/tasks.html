@@ -5,11 +5,36 @@
     <title>Todo-App</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Optional: Add custom styles -->
     <style>
         .completed-task {
             text-decoration: line-through;
-            color: #6c757d; /* Bootstrap's secondary text color */
+            color: #6c757d;
+        }
+        .priority-high {
+            border-left: 4px solid #dc3545;
+        }
+        .priority-medium {
+            border-left: 4px solid #ffc107;
+        }
+        .priority-low {
+            border-left: 4px solid #198754;
+        }
+        .category-badge {
+            font-size: 0.75rem;
+        }
+        .search-filters {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .task-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -17,46 +42,217 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-md-10 col-lg-8">
 
             <h1 class="text-center mb-4">Todo App</h1>
 
-            <!-- Form to add a new task -->
-            <form action="/" method="post" class="mb-4">
-                <div class="input-group">
-                    <!-- FIX: Corrected class from "form-contro" to "form-control" -->
-                    <input class="form-control" type="text" name="title" placeholder="Add a new task..." required>
-                    <button class="btn btn-primary" type="submit">Add Task</button>
+            <!-- Search and Filter Section -->
+            <div class="search-filters">
+                <form action="/search" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search Tasks</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="search" 
+                               name="search" 
+                               th:value="${searchTerm}"
+                               placeholder="Search by title...">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">All</option>
+                            <option value="false" th:selected="${selectedStatus == false}">Pending</option>
+                            <option value="true" th:selected="${selectedStatus == true}">Completed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">All</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat}"
+                                    th:text="${cat.displayName}"
+                                    th:selected="${cat == selectedCategory}">
+                                Category
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="">All</option>
+                            <option th:each="pri : ${priorities}"
+                                    th:value="${pri}"
+                                    th:text="${pri.displayName}"
+                                    th:selected="${pri == selectedPriority}">
+                                Priority
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <div class="d-flex gap-2 w-100">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <a href="/" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Enhanced Form to add a new task -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Add New Task</h5>
                 </div>
-            </form>
+                <div class="card-body">
+                    <form action="/" method="post" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Task Title *</label>
+                            <input class="form-control" 
+                                   type="text" 
+                                   id="title"
+                                   name="title" 
+                                   placeholder="Add a new task..." 
+                                   required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="newCategory" class="form-label">Category</label>
+                            <select class="form-select" id="newCategory" name="category">
+                                <option value="">Select category</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat}"
+                                        th:text="${cat.displayName}">
+                                    Category
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="newPriority" class="form-label">Priority</label>
+                            <select class="form-select" id="newPriority" name="priority">
+                                <option value="">Select priority</option>
+                                <option th:each="pri : ${priorities}"
+                                        th:value="${pri}"
+                                        th:text="${pri.displayName}">
+                                    Priority
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="2" 
+                                      placeholder="Add a detailed description (optional)..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-plus-circle"></i> Add Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Task List -->
-            <ul class="list-group">
-                <!-- Loop through each task -->
-                <li th:each="task : ${tasks}"
-                    class="list-group-item d-flex justify-content-between align-items-center"
-                    th:classappend="${task.completed} ? 'list-group-item-light' : ''">
-
-                    <!-- Task Title with conditional styling for completed tasks -->
-                    <span th:text="${task.title}"
-                          th:classappend="${task.completed} ? 'completed-task' : ''">
-                        Task Title
-                    </span>
-
-                    <!-- Action Buttons -->
-                    <div>
-                        <!-- Toggle Button -->
-                        <a th:href="@{'/' + ${task.id} + '/toggle'}"
-                           class="btn btn-sm"
-                           th:classappend="${task.completed} ? 'btn-secondary' : 'btn-success'">
-                            <span th:text="${task.completed} ? 'Undo' : 'Done'"></span>
-                        </a>
-
-                        <!-- Delete Button -->
-                        <a th:href="@{'/' + ${task.id} + '/delete'}" class="btn btn-danger btn-sm">Delete</a>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Tasks (<span th:text="${tasks.size()}">0</span>)</h5>
+                    <div class="text-muted">
+                        <span th:if="${searchTerm != null or selectedStatus != null or selectedCategory != null or selectedPriority != null}">
+                            Filtered results
+                        </span>
                     </div>
-                </li>
-            </ul>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <!-- Loop through each task -->
+                        <li th:each="task : ${tasks}"
+                            class="list-group-item"
+                            th:classappend="${task.completed ? 'list-group-item-light' : ''} + ' ' + ${task.priority == T(com.app.todoapp.models.Task.TaskPriority).HIGH ? 'priority-high' : ''} + ' ' + ${task.priority == T(com.app.todoapp.models.Task.TaskPriority).MEDIUM ? 'priority-medium' : ''} + ' ' + ${task.priority == T(com.app.todoapp.models.Task.TaskPriority).LOW ? 'priority-low' : ''}">
+
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1 me-3">
+                                    <!-- Task Title with conditional styling for completed tasks -->
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span th:text="${task.title}"
+                                              th:classappend="${task.completed} ? 'completed-task' : ''"
+                                              class="fw-bold">
+                                            Task Title
+                                        </span>
+                                        
+                                        <!-- Category Badge -->
+                                        <span th:if="${task.category != null}"
+                                              class="badge bg-secondary category-badge"
+                                              th:text="${task.category.displayName}">
+                                            Category
+                                        </span>
+                                        
+                                        <!-- Priority Badge -->
+                                        <span th:if="${task.priority != null}"
+                                              class="badge"
+                                              th:classappend="${task.priority == T(com.app.todoapp.models.Task.TaskPriority).HIGH ? 'bg-danger' : ''} + ' ' + ${task.priority == T(com.app.todoapp.models.Task.TaskPriority).MEDIUM ? 'bg-warning text-dark' : ''} + ' ' + ${task.priority == T(com.app.todoapp.models.Task.TaskPriority).LOW ? 'bg-success' : ''}"
+                                              th:text="${task.priority.displayName}">
+                                            Priority
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Task Description -->
+                                    <div th:if="${task.description != null and task.description != ''}"
+                                         class="task-description"
+                                         th:text="${task.description}">
+                                        Description
+                                    </div>
+                                    
+                                    <!-- Task Creation Date -->
+                                    <small class="text-muted">
+                                        Created: <span th:text="${#temporals.format(task.createdAt, 'MMM dd, yyyy HH:mm')}">Date</span>
+                                    </small>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex gap-1">
+                                    <!-- Edit Button -->
+                                    <a th:href="@{'/' + ${task.id} + '/edit'}" 
+                                       class="btn btn-outline-primary btn-sm"
+                                       title="Edit task">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    
+                                    <!-- Toggle Button -->
+                                    <a th:href="@{'/' + ${task.id} + '/toggle'}"
+                                       class="btn btn-sm"
+                                       th:classappend="${task.completed} ? 'btn-secondary' : 'btn-success'"
+                                       th:title="${task.completed} ? 'Mark as pending' : 'Mark as completed'">
+                                        <i th:class="${task.completed} ? 'bi bi-arrow-counterclockwise' : 'bi bi-check-lg'"></i>
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <a th:href="@{'/' + ${task.id} + '/delete'}" 
+                                       class="btn btn-danger btn-sm"
+                                       title="Delete task"
+                                       onclick="return confirm('Are you sure you want to delete this task?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <!-- Empty state -->
+                        <li th:if="${#lists.isEmpty(tasks)}" class="list-group-item text-center text-muted py-4">
+                            <i class="bi bi-inbox display-4"></i>
+                            <p class="mt-2 mb-0">No tasks found</p>
+                            <small th:if="${searchTerm != null or selectedStatus != null or selectedCategory != null or selectedPriority != null}">
+                                Try adjusting your search criteria
+                            </small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Task - Todo-App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Edit Task</h1>
+                <a href="/" class="btn btn-secondary">Back to Tasks</a>
+            </div>
+
+            <!-- Edit Task Form -->
+            <form th:action="@{'/' + ${task.id} + '/edit'}" method="post" class="card">
+                <div class="card-body">
+                    
+                    <!-- Task Title -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Task Title *</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="title" 
+                               name="title" 
+                               th:value="${task.title}" 
+                               required>
+                    </div>
+
+                    <!-- Task Description -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" 
+                                  id="description" 
+                                  name="description" 
+                                  rows="3" 
+                                  th:text="${task.description}"
+                                  placeholder="Add a detailed description..."></textarea>
+                    </div>
+
+                    <!-- Task Category -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">Select a category</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat}"
+                                    th:text="${cat.displayName}"
+                                    th:selected="${cat == task.category}">
+                                Category
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Task Priority -->
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="">Select priority</option>
+                            <option th:each="pri : ${priorities}"
+                                    th:value="${pri}"
+                                    th:text="${pri.displayName}"
+                                    th:selected="${pri == task.priority}">
+                                Priority
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Task Status -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   id="completed" 
+                                   th:checked="${task.completed}" 
+                                   disabled>
+                            <label class="form-check-label" for="completed">
+                                Completed
+                            </label>
+                        </div>
+                        <small class="text-muted">Use the toggle button on the main page to change completion status</small>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Update Task</button>
+                        <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html> 
